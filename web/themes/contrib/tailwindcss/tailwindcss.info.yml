@@ -1,0 +1,13 @@
+name: Tailwind CSS Starter Kit
+description: A starter kit theme for Drupal 8/9 and Tailwind CSS.
+core_version_requirement: ^8 || ^9 || ^10
+type: theme
+base theme: stable
+libraries:
+  - tailwindcss/global-styling
+starterkit: true
+
+# Information added by Drupal.org packaging script on 2023-10-23
+version: '5.0.0-alpha3'
+project: 'tailwindcss'
+datestamp: 1698076132
