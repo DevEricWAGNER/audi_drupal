@@ -1,0 +1,47 @@
+dashboard:
+  version: VERSION
+  css:
+    component:
+      css/dashboard.css: {}
+  js:
+    js/dashboard.js: {}
+  dependencies:
+    - core/once
+    - core/drupal.ajax
+
+database:
+  version: VERSION
+  js:
+    js/database.js: {}
+  dependencies:
+    - core/once
+    - webprofiler/database.highlight
+
+database.highlight:
+  remote: https://highlightjs.org
+  license:
+    name: BSD 3-Clause License
+    url: https://github.com/highlightjs/highlight.js/blob/main/LICENSE
+    gpl-compatible: true
+  version: '11.6.0'
+  js:
+    https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/highlight.min.js:
+      { type: external }
+  css:
+    component:
+      https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/default.min.css:
+        { type: external }
+
+tab:
+  version: VERSION
+  css:
+    component:
+      css/tab.css: {}
+  js:
+    js/tab.js: {}
+
+cwv:
+  version: VERSION
+  css:
+    component:
+      css/cwv.css: {}

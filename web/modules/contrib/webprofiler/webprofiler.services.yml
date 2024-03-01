@@ -1,0 +1,455 @@
+services:
+  logger.channel.webprofiler:
+    class: Drupal\Core\Logger\LoggerChannel
+    factory: logger.factory:get
+    arguments: ['webprofiler']
+
+  logger.channel.debug:
+    class: Drupal\Core\Logger\LoggerChannel
+    factory: logger.factory:get
+    arguments: ['debug']
+
+  webprofiler.config_entity_storage_decorator_generator:
+    class: Drupal\webprofiler\Entity\ConfigEntityStorageDecoratorGenerator
+    arguments: ['@entity_type.manager']
+
+  webprofiler.file_storage:
+    class: Symfony\Component\HttpKernel\Profiler\FileProfilerStorage
+    arguments: ['%webprofiler.file_profiler_storage_dns%']
+
+  webprofiler.profiler:
+    class: Drupal\webprofiler\Profiler\Profiler
+    arguments:
+      [
+        '@webprofiler.file_storage',
+        '@logger.channel.webprofiler',
+        '@config.factory',
+      ]
+
+  webprofiler.matcher:
+    class: Drupal\webprofiler\RequestMatcher\WebprofilerRequestMatcher
+    arguments: ['@path.matcher', '@config.factory']
+
+  webprofiler.profiler_listener:
+    class: Drupal\webprofiler\EventListener\ProfilerListener
+    arguments:
+      ['@webprofiler.profiler', '@request_stack', '@webprofiler.matcher']
+    tags:
+      - { name: event_subscriber }
+
+  webprofiler.nonce_generator:
+    class: Drupal\webprofiler\Csp\NonceGenerator
+
+  webprofiler.csp:
+    class: Drupal\webprofiler\Csp\ContentSecurityPolicyHandler
+    arguments: ['@webprofiler.nonce_generator']
+
+  webprofiler.template_manager:
+    class: Drupal\webprofiler\Profiler\TemplateManager
+    arguments: ['@webprofiler.profiler', '@twig', '%webprofiler.templates%']
+
+  webprofiler.toolbar_listener:
+    class: Drupal\webprofiler\EventListener\ToolbarListener
+    arguments:
+      [
+        '@renderer',
+        '@current_user',
+        '@url_generator',
+        '@webprofiler.csp',
+        '@webprofiler.collector.dump',
+        '@config.factory',
+      ]
+    tags:
+      - { name: event_subscriber }
+
+  webprofiler.collector.dump:
+    class: Symfony\Component\HttpKernel\DataCollector\DumpDataCollector
+
+  webprofiler.file_link_formatter:
+    class: Drupal\webprofiler\Debug\FileLinkFormatter
+    factory: Drupal\webprofiler\Debug\FileLinkFormatterFactory::getFileLinkFormatter
+    arguments: ['@config.factory']
+
+  webprofiler.twig.code_extension:
+    class: Drupal\webprofiler\Twig\Extension\CodeExtension
+    arguments: ['@webprofiler.file_link_formatter']
+    tags:
+      - { name: twig.extension, priority: 100 }
+
+  webprofiler.twig.database_extension:
+    class: Drupal\webprofiler\Twig\Extension\DatabaseExtension
+    tags:
+      - { name: twig.extension, priority: 100 }
+
+  http_middleware.webprofiler:
+    class: Drupal\webprofiler\StackMiddleware\WebprofilerMiddleware
+    tags:
+      - { name: http_middleware, priority: 350 }
+
+  http_client_middleware.webprofiler:
+    class: Drupal\webprofiler\Http\HttpClientMiddleware
+    tags:
+      - { name: http_client_middleware }
+
+  # parameter converter service for profile token
+  webprofiler.token_converter:
+    class: Drupal\webprofiler\Routing\TokenConverter
+    tags:
+      - { name: paramconverter }
+
+  # debug services
+  webprofiler.debug.entity_type.manager:
+    class: Drupal\webprofiler\Entity\EntityTypeManagerWrapper
+    public: false
+    decorates: entity_type.manager
+    arguments:
+      [
+        '@webprofiler.debug.entity_type.manager.inner',
+        '@container.namespaces',
+        '@module_handler',
+        '@cache.discovery',
+        '@string_translation',
+        '@class_resolver',
+        '@entity.last_installed_schema.repository',
+      ]
+    parent: container.trait
+    tags:
+      - { name: plugin_manager_cache_clear }
+
+  webprofiler.debug.asset.css.collection_renderer:
+    class: Drupal\webprofiler\Asset\CssCollectionRendererWrapper
+    public: false
+    decorates: asset.css.collection_renderer
+    arguments:
+      [
+        '@webprofiler.debug.asset.css.collection_renderer.inner',
+        '@webprofiler.assets',
+      ]
+
+  webprofiler.debug.asset.js.collection_renderer:
+    class: Drupal\webprofiler\Asset\JsCollectionRendererWrapper
+    public: false
+    decorates: asset.js.collection_renderer
+    arguments:
+      [
+        '@webprofiler.debug.asset.js.collection_renderer.inner',
+        '@webprofiler.assets',
+      ]
+
+  webprofiler.debug.cache_factory:
+    class: Drupal\webprofiler\Cache\CacheFactoryWrapper
+    public: false
+    decorates: cache_factory
+    arguments: ['@webprofiler.debug.cache_factory.inner', '@webprofiler.cache']
+
+  webprofiler.debug.state:
+    class: Drupal\webprofiler\State\StateWrapper
+    public: false
+    decorates: state
+    arguments:
+      ['@keyvalue', '@webprofiler.debug.state.inner', '@webprofiler.state']
+
+  webprofiler.debug.mail_manager:
+    class: Drupal\webprofiler\Mail\MailManagerWrapper
+    public: false
+    decorates: plugin.manager.mail
+    arguments:
+      [
+        '@container.namespaces',
+        '@cache.discovery',
+        '@module_handler',
+        '@config.factory',
+        '@logger.factory',
+        '@string_translation',
+        '@renderer',
+        '@webprofiler.debug.mail_manager.inner',
+        '@webprofiler.mail',
+      ]
+
+  # data collectors
+  webprofiler.request:
+    class: Drupal\webprofiler\DataCollector\RequestDataCollector
+    arguments: ['@controller_resolver']
+    tags:
+      - { name: event_subscriber }
+      - {
+          name: data_collector,
+          template: '@webprofiler/Collector/request.html.twig',
+          id: 'request',
+          label: 'Request',
+          priority: 1100,
+        }
+
+  webprofiler.user:
+    class: Drupal\webprofiler\DataCollector\UserDataCollector
+    arguments:
+      [
+        '@current_user',
+        '@entity_type.manager',
+        '@config.factory',
+        '@authentication_collector',
+      ]
+    tags:
+      - {
+          name: data_collector,
+          template: '@webprofiler/Collector/user.html.twig',
+          id: 'user',
+          label: 'User',
+          priority: 1050,
+        }
+
+  webprofiler.devel:
+    class: Drupal\webprofiler\DataCollector\DevelDataCollector
+    arguments: ['@current_route_match', '@menu.link_tree', '@renderer']
+    tags:
+      - {
+          name: data_collector,
+          template: '@webprofiler/Collector/devel.html.twig',
+          id: 'devel',
+          label: 'Devel',
+          priority: 1000,
+        }
+
+  webprofiler.time:
+    class: Drupal\webprofiler\DataCollector\TimeDataCollector
+    arguments: ['@tracer.tracer_factory']
+    tags:
+      - {
+          name: data_collector,
+          template: '@webprofiler/Collector/time.html.twig',
+          id: 'time',
+          label: 'Time',
+          priority: 900,
+        }
+
+  webprofiler.memory:
+    class: Drupal\webprofiler\DataCollector\MemoryDataCollector
+    tags:
+      - {
+          name: data_collector,
+          template: '@webprofiler/Collector/memory.html.twig',
+          id: 'memory',
+          label: 'Memory',
+          priority: 850,
+        }
+
+  webprofiler.ajax:
+    class: Symfony\Component\HttpKernel\DataCollector\AjaxDataCollector
+    tags:
+      - {
+          name: data_collector,
+          template: '@webprofiler/Collector/ajax.html.twig',
+          id: 'ajax',
+          label: 'Ajax',
+          priority: 800,
+        }
+
+  webprofiler.database:
+    class: Drupal\webprofiler\DataCollector\DatabaseDataCollector
+    arguments: ['@database', '@config.factory']
+    tags:
+      - {
+          name: data_collector,
+          template: '@webprofiler/Collector/database.html.twig',
+          id: 'database',
+          label: 'Database',
+          priority: 750,
+        }
+
+  webprofiler.services:
+    class: Drupal\webprofiler\DataCollector\ServicesDataCollector
+    arguments: ['@service_container']
+    tags:
+      - {
+          name: data_collector,
+          template: '@webprofiler/Collector/services.html.twig',
+          id: 'services',
+          label: 'Services',
+          priority: 700,
+        }
+
+  webprofiler.assets:
+    class: Drupal\webprofiler\DataCollector\AssetsDataCollector
+    arguments: ['%app.root%', '@library.discovery']
+    tags:
+      - {
+          name: data_collector,
+          template: '@webprofiler/Collector/assets.html.twig',
+          id: 'assets',
+          label: 'Assets',
+          priority: 650,
+        }
+
+  webprofiler.cache:
+    class: Drupal\webprofiler\DataCollector\CacheDataCollector
+    tags:
+      - {
+          name: data_collector,
+          template: '@webprofiler/Collector/cache.html.twig',
+          id: 'cache',
+          label: 'Cache',
+          priority: 600,
+        }
+
+  webprofiler.config:
+    class: Drupal\webprofiler\DataCollector\ConfigDataCollector
+    tags:
+      - {
+          name: data_collector,
+          template: '@webprofiler/Collector/config.html.twig',
+          id: 'configs',
+          label: 'Config',
+          priority: 550,
+        }
+
+  webprofiler.state:
+    class: Drupal\webprofiler\DataCollector\StateDataCollector
+    tags:
+      - {
+          name: data_collector,
+          template: '@webprofiler/Collector/state.html.twig',
+          id: 'state',
+          label: 'State',
+          priority: 500,
+        }
+
+  webprofiler.events:
+    class: Drupal\webprofiler\DataCollector\EventsDataCollector
+    arguments: ['@event_dispatcher']
+    tags:
+      - {
+          name: data_collector,
+          template: '@webprofiler/Collector/events.html.twig',
+          id: 'events',
+          label: 'Events',
+          priority: 450,
+        }
+
+  webprofiler.extensions:
+    class: Drupal\webprofiler\DataCollector\ExtensionsDataCollector
+    arguments: ['@module_handler', '@theme_handler', '%app.root%']
+    tags:
+      - {
+          name: data_collector,
+          template: '@webprofiler/Collector/extensions.html.twig',
+          id: 'extensions',
+          label: 'Extensions',
+          priority: 400,
+        }
+
+  webprofiler.forms:
+    class: Drupal\webprofiler\DataCollector\FormsDataCollector
+    arguments: ['@form_builder']
+    tags:
+      - {
+          name: data_collector,
+          template: '@webprofiler/Collector/forms.html.twig',
+          id: 'forms',
+          label: 'Forms',
+          priority: 350,
+        }
+
+  webprofiler.http:
+    class: Drupal\webprofiler\DataCollector\HttpDataCollector
+    arguments: ['@http_client_middleware.webprofiler']
+    tags:
+      - {
+          name: data_collector,
+          template: '@webprofiler/Collector/http.html.twig',
+          id: 'http',
+          label: 'Http',
+          priority: 300,
+        }
+
+  webprofiler.frontend:
+    class: Drupal\webprofiler\DataCollector\FrontendDataCollector
+    tags:
+      - {
+          name: data_collector,
+          template: '@webprofiler/Collector/frontend.html.twig',
+          id: 'frontend',
+          label: 'Frontend',
+          priority: 250,
+        }
+
+  webprofiler.theme:
+    class: Drupal\webprofiler\DataCollector\ThemeDataCollector
+    arguments:
+      [
+        '@theme.manager',
+        '@theme.negotiator',
+        '@twig',
+        '@module_handler',
+        '@tracer.twig_profile',
+      ]
+    tags:
+      - {
+          name: data_collector,
+          template: '@webprofiler/Collector/theme.html.twig',
+          id: 'theme',
+          label: 'Theme',
+          priority: 200,
+        }
+
+  webprofiler.routing:
+    class: Drupal\webprofiler\DataCollector\RoutingDataCollector
+    arguments: ['@router.route_provider']
+    tags:
+      - {
+          name: data_collector,
+          template: '@webprofiler/Collector/routing.html.twig',
+          id: 'routing',
+          label: 'Routing',
+          priority: 150,
+        }
+
+  webprofiler.translations:
+    class: Drupal\webprofiler\DataCollector\TranslationsDataCollector
+    arguments: ['@string_translation']
+    tags:
+      - {
+          name: data_collector,
+          template: '@webprofiler/Collector/translations.html.twig',
+          id: 'translations',
+          label: 'Translations',
+          priority: 100,
+        }
+
+  webprofiler.mail:
+    class: Drupal\webprofiler\DataCollector\MailDataCollector
+    tags:
+      - {
+          name: data_collector,
+          template: '@webprofiler/Collector/mail.html.twig',
+          id: 'mail',
+          label: 'Mail',
+          priority: 50,
+        }
+
+  webprofiler.drupal:
+    class: Drupal\webprofiler\DataCollector\DrupalDataCollector
+    arguments: ['@redirect.destination', '%install_profile%']
+    tags:
+      - {
+          name: data_collector,
+          template: '@webprofiler/Collector/drupal.html.twig',
+          id: 'drupal',
+          label: 'Drupal',
+          priority: 0,
+        }
+
+  webprofiler.database_listener:
+    class: Drupal\webprofiler\EventListener\DatabaseListener
+    arguments: ['@webprofiler.database']
+    tags:
+      - { name: event_subscriber }
+
+  # Error handler
+  webprofiler.error_renderer:
+    class: Drupal\webprofiler\ErrorRenderer\HtmlErrorRenderer
+    arguments: ['@webprofiler.file_link_formatter', '@logger.channel.debug']
+
+  # Monolog processors.
+  monolog.processor.debug:
+    class: Drupal\webprofiler\Monolog\Processor\DebugProcessor
+    arguments: ['@request_stack']

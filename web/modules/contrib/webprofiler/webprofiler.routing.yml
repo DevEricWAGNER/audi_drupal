@@ -1,0 +1,73 @@
+webprofiler.toolbar:
+  path: '/profiler/{token}'
+  defaults:
+    _controller: '\Drupal\webprofiler\Controller\ProfilerController::toolbarAction'
+  requirements:
+    _permission: 'view webprofiler toolbar'
+
+webprofiler.dashboard:
+  path: '/admin/reports/profiler/view/{token}'
+  defaults:
+    _title: 'Webprofiler Dashboard'
+    _controller: '\Drupal\webprofiler\Controller\DashboardController::dashboard'
+  requirements:
+    _permission: 'access webprofiler'
+
+webprofiler.panel:
+  path: '/admin/reports/profiler/view/{token}/panel/{name}'
+  defaults:
+    _controller: '\Drupal\webprofiler\Controller\DashboardController::panel'
+  requirements:
+    _permission: 'view webprofiler toolbar'
+
+# get query explain
+webprofiler.database.explain:
+  path: '/admin/reports/profiler/database_explain/{token}/{qid}'
+  defaults:
+    _controller: '\Drupal\webprofiler\Controller\DatabaseController::explainAction'
+    _title: 'Query explain'
+  requirements:
+    _permission: 'access webprofiler'
+
+webprofiler.admin_list:
+  path: '/admin/reports/profiler/list'
+  defaults:
+    _controller: '\Drupal\webprofiler\Controller\ReportController::list'
+    _title: 'Webprofiler'
+  requirements:
+    _permission: 'access webprofiler'
+
+webprofiler.settings:
+  path: '/admin/config/development/devel/webprofiler'
+  defaults:
+    _form: 'Drupal\webprofiler\Form\SettingsForm'
+    _title: 'Webprofiler settings'
+  requirements:
+    _permission: 'access webprofiler'
+
+# save frontend data
+webprofiler.frontend.navigation:
+  path: '/admin/reports/profiler/frontend/{profile}/navigation'
+  defaults:
+    _controller: '\Drupal\webprofiler\Controller\FrontendController::saveNavigationDataAction'
+    _title: 'Save frontend data'
+  options:
+    parameters:
+      profile:
+        type: 'webprofiler:token'
+  methods: [POST]
+  requirements:
+    _permission: 'view webprofiler toolbar'
+
+webprofiler.frontend.cwv:
+  path: '/admin/reports/profiler/frontend/{profile}/cwv'
+  defaults:
+    _controller: '\Drupal\webprofiler\Controller\FrontendController::saveCwvDataAction'
+    _title: 'Save CWV data'
+  options:
+    parameters:
+      profile:
+        type: 'webprofiler:token'
+  methods: [POST]
+  requirements:
+    _permission: 'view webprofiler toolbar'

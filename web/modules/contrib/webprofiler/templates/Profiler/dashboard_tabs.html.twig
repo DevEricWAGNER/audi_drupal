@@ -1,0 +1,13 @@
+{{ attach_library('webprofiler/tab') }}
+
+<div class="webprofiler__tabs">
+  {% for id,tab in tabs %}
+    <div class="webprofiler__tabs__label" data-tab-id="js-webprofiler__tab-{{ id }}">{{ tab.label }}</div>
+  {% endfor %}
+</div>
+
+{% for id,tab in tabs %}
+  <div class="webprofiler__tabs__content" id="js-webprofiler__tab-{{ id }}">
+    <div>{{ tab.content }}</div>
+  </div>
+{% endfor %}

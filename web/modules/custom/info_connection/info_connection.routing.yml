@@ -1,0 +1,7 @@
+info_connection.form:
+  path: '/admin/config/system/info_connection'
+  defaults:
+    _form: '\Drupal\info_connection\Form\InfoConnectionForm'
+    _title: 'Connection Information'
+  requirements:
+    _permission: 'administer site configuration'

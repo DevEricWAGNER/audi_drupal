@@ -1,0 +1,36 @@
+# Schema for the configuration files of the webprofiler module.
+
+webprofiler.settings:
+  type: config_object
+  label: 'Webprofiler settings'
+  mapping:
+    exclude_paths:
+      type: string
+      label: 'Paths to exclude from profiling'
+    intercept_redirects:
+      type: boolean
+      label: 'Intercept redirects'
+    purge_on_cache_clear:
+      type: boolean
+      label: 'Purge profiles on cache clear'
+    active_toolbar_items:
+      type: sequence
+      label: 'Active toolbar items'
+      sequence:
+        - type: string
+          label: 'Toolbar item'
+    query_sort:
+      type: string
+      label: 'Sort query log'
+    query_highlight:
+      type: integer
+      label: 'Slow query highlighting'
+    ide:
+      type: string
+      label: 'IDE'
+    ide_remote_path:
+      type: string
+      label: 'IDE link remote path'
+    ide_local_path:
+      type: string
+      label: 'IDE link local path'

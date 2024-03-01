@@ -24,7 +24,9 @@
         "drupal/gin_toolbar": "^1.0@RC",
         "drupal/pathauto": "^1.12",
         "drupal/stable": "^2.0",
-        "drupal/tailwindcss": "^5.0@alpha"
+        "drupal/tailwindcss": "^5.0@alpha",
+        "drupal/webprofiler": "^10.1",
+        "drush/drush": "^12.4"
     },
     "conflict": {
         "drupal/drupal": "*"

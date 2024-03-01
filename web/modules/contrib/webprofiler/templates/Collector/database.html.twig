@@ -1,0 +1,64 @@
+{% block toolbar %}
+
+  {% set icon %}
+    {% set status = collector.querycount > 50 ? 'yellow' %}
+
+    {{ include('@webprofiler/Icon/002--database.svg') }}
+    <span class="sf-toolbar-value">{{ collector.querycount }}</span>
+    <span class="sf-toolbar-info-piece-additional-detail">
+      <span class="sf-toolbar-label">in</span>
+      <span class="sf-toolbar-value">{{ '%0.2f'|format(collector.time) }}</span>
+      <span class="sf-toolbar-label">ms</span>
+    </span>
+  {% endset %}
+
+  {% set text %}
+    <div class="sf-toolbar-info-piece">
+      <b>Db queries</b>
+      <span class="sf-toolbar-status">{{ collector.querycount }}</span>
+    </div>
+    <div class="sf-toolbar-info-piece">
+      <b>Query time</b>
+      <span>{{ '%0.2f'|format(collector.time) }} ms</span>
+    </div>
+    <div class="sf-toolbar-info-piece">
+      <b>Default database</b>
+      <span>{{ collector.database.driver }}://{{ collector.database.host }}:{{ collector.database.port }}/{{ collector.database.database }}</span>
+    </div>
+  {% endset %}
+
+  {{ include('@webprofiler/Profiler/toolbar_item.html.twig', { link: profiler_url, status: status|default('') }) }}
+{% endblock %}
+
+{% block panel %}
+  {{ attach_library('webprofiler/database')}}
+
+  {% set queryHighlightThreshold = collector.queryHighlightThreshold %}
+
+  {% for query in collector.queries %}
+    {{ _self.query(query, token, loop.index0, queryHighlightThreshold) }}
+  {% endfor %}
+{% endblock %}
+
+{% macro query(query, token, qid, queryHighlightThreshold) %}
+  {% set slow_query = query.time > (queryHighlightThreshold/10) %}
+  <div
+    data-wp-caller="{% if query.caller.class is not null %}{{ query.caller.class|lower }}{% endif %}"
+    data-wp-database="{{ query.database }}"
+    data-wp-type="{{ query_type(query.query) }}"
+    data-wp-slow="{% if slow_query %}1{% else %}0{% endif %}"
+    data-wp-time="{{ query.time }}"
+    data-wp-class="{{ query.caller.class }}->{{ query.caller.function }}()"
+    data-wp-db="{{ query.database }}"
+    data-wp-target="{{ query.target }}"
+    data-wp-has-args="{% if query.args %}1{% else %}0{% endif %}"
+    data-wp-qid="{{ qid }}"
+    data-wp-explain-path="{{ path('webprofiler.database.explain', {'token': token, 'qid': qid}) }}"
+    class="wp-db-query"
+  >
+    <pre style="white-space: unset; border-left: 8px solid {% if slow_query %}darkgoldenrod{% else %}green{% endif %};">
+      <code class="wp-query-placeholder language-sql">{{ query.query }}</code>
+      {% if query.args %}<code class="wp-query-executable language-sql is-hidden">{{ query_executable(query) }}</code>{% endif %}
+    </pre>
+  </div>
+{% endmacro %}

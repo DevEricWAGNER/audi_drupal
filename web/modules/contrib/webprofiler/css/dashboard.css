@@ -1,0 +1,179 @@
+.webprofiler__dashboard {
+  display: flex;
+}
+
+.webprofiler__info {
+  margin-bottom: 24px;
+  padding: 22px;
+  border: 1px solid #dedfe4;
+  box-shadow: 0 4px 10px 0 #0000001a;
+  font-size: 18px;
+}
+
+.webprofiler__collectors h4 {
+  font-size: 22px;
+}
+
+.webprofiler_collectors_list {
+  display: flex;
+  flex-direction: column;
+  background-color: #fafbfd;
+}
+
+.webprofiler__collector {
+  padding: 11px 42px 11px 22px;
+  color: #55565b;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.webprofiler__collector.active {
+  background: #f3f4f9;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.webprofiler__collector.active a {
+  color: #003ecc;
+}
+
+.webprofiler__collector:hover {
+  padding: 10px 41px 10px 21px;
+  border: 1px solid #d4d4d8;
+}
+
+.webprofiler__collector a {
+  text-decoration: none;
+  color: #55565b;
+}
+
+.webprofiler__panels {
+  flex-grow: 1;
+  margin-left: 44px;
+}
+
+.webprofiler__panels h2 {
+  color: #232429;
+  font-size: 28px;
+}
+
+.webprofiler__panels h3 {
+  color: #232429;
+  font-size: 22px;
+}
+
+.webprofiler__key {
+  width: 20%;
+}
+
+.webprofiler__value {
+  width: 80%;
+}
+
+.webprofiler__panel hr {
+  margin-bottom: 40px;
+}
+
+.webprofiler__panel .is-hidden {
+  display: none;
+}
+
+.webprofiler__cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.webprofiler__card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-items: flex-start;
+  width: 32%;
+  padding: 0;
+  border: var(--card-border-size) solid var(--card-border-color);
+  border-radius: var(--card-border-radius-size);
+  background-color: var(--card-bg-color);
+  box-shadow: var(--card-box-shadow);
+}
+
+
+.webprofiler__card__title {
+  padding: 5px 10px;
+  color: #fff;
+  background-color: #003ecc;
+}
+
+.webprofiler__card_content {
+  padding: 10px;
+}
+
+.webprofiler__card_large {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-items: flex-start;
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 0;
+  border: var(--card-border-size) solid var(--card-border-color);
+  border-radius: var(--card-border-radius-size);
+  background-color: var(--card-bg-color);
+  box-shadow: var(--card-box-shadow);
+}
+
+.wp-executable-actions {
+  display: flex;
+  margin-bottom: 40px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid #d4d4d8;
+  gap: 10px;
+}
+
+.wp-executable-toggle,
+.wp-query-copy,
+.wp-query-explain {
+  padding: 14px 24px;
+  cursor: pointer;
+  color: #fff;
+  border: none;
+  border-radius: 2px;
+  background-color: #003ecc;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+.wp-executable-toggle:hover,
+.wp-query-copy:hover,
+.wp-query-explain:hover {
+  color: #fff;
+  background-color: #002e9a;
+}
+
+.wp-query-explain {
+  text-decoration: none;
+}
+
+#twig-dump pre {
+  padding: 15px;
+  border: 1px solid #e0e0e0;
+  background-color: #fff;
+  box-shadow: 0 0 1px rgba(128, 128, 128, .2);
+  font-size: 12px;
+  line-height: 1.7;
+}
+#twig-dump span {
+  padding: 1px 2px;
+  border-radius: 2px;
+}
+#twig-dump .status-error {
+  color: #b0413e;
+  background: transparent;
+}
+#twig-dump .status-warning {
+  background: rgba(240, 181, 24, 0.3);
+}
+#twig-dump .status-success {
+  background: rgba(100, 189, 99, 0.2);
+}
+#twig-dump .status-info {
+  background: #ddf;
+}

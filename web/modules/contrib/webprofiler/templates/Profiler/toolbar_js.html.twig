@@ -1,0 +1,20 @@
+<div id="sfwdt{{ token }}" class="sf-toolbar sf-display-none" role="region" aria-label="Drupal Webprofiler Toolbar">
+  {% include('@webprofiler/Profiler/toolbar.html.twig') with {
+    templates: {
+      'request': '@webprofiler/Profiler/cancel.html.twig'
+    },
+    profile: null,
+    profiler_url: url('webprofiler.toolbar', {token: token}),
+  } %}
+</div>
+
+{{ include('@webprofiler/Profiler/base_js.html.twig') }}
+
+<style{% if csp_style_nonce %} nonce="{{ csp_style_nonce }}"{% endif %}>
+  {{ include('@webprofiler/Profiler/toolbar.css.twig') }}
+</style>
+<script{% if csp_script_nonce %} nonce="{{ csp_script_nonce }}"{% endif %}>/*<![CDATA[*/
+  (function () {
+    Sfjs.loadToolbar('{{ token }}');
+  })();
+/*]]>*/</script>

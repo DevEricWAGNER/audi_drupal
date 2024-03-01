@@ -1,0 +1,102 @@
+{% block toolbar %}
+
+  {% set icon %}
+    <span class="sf-toolbar-label">
+      {{ include('@webprofiler/Icon/drupal-10.svg') }}
+    </span>
+    <span class="sf-toolbar-value">{{ collector.drupalVersion }}</span>
+  {% endset %}
+
+  {% set text %}
+    <div class="sf-toolbar-info-group">
+      <div class="sf-toolbar-info-piece">
+        <b>Profiler token</b>
+        <span>
+          {% if profiler_url %}
+            <a href="{{ profiler_url }}">{{ collector.token }}</a>
+          {% else %}
+            {{ collector.token }}
+          {% endif %}
+        </span>
+      </div>
+
+      {% if collector.traceId %}
+        <div class="sf-toolbar-info-piece">
+          <b>Trace Id</b>
+          <span>
+            {{ collector.traceId }}
+          </span>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="sf-toolbar-info-group">
+      <div class="sf-toolbar-info-piece sf-toolbar-info-php">
+        <b>PHP version</b>
+        <span{% if collector.phpversionextra %} title="{{ collector.phpversion ~ collector.phpversionextra }}"{% endif %}>
+          {{ collector.phpversion }}
+          &nbsp; <a href="{{ path('system.php') }}">View phpinfo()</a>
+        </span>
+      </div>
+
+      <div class="sf-toolbar-info-piece sf-toolbar-info-php-ext">
+        <b>PHP Extensions</b>
+        <span
+          class="sf-toolbar-status sf-toolbar-status-{{ collector.hasxdebug ? 'green' : 'gray' }}">xdebug {{ collector.hasxdebug ? '✓' : '✗' }}</span>
+        <span
+          class="sf-toolbar-status sf-toolbar-status-{{ collector.hasapcu ? 'green' : 'gray' }}">APCu {{ collector.hasapcu ? '✓' : '✗' }}</span>
+        <span
+          class="sf-toolbar-status sf-toolbar-status-{{ collector.haszendopcache ? 'green' : 'red' }}">OPcache {{ collector.haszendopcache ? '✓' : '✗' }}</span>
+      </div>
+
+      <div class="sf-toolbar-info-piece">
+        <b>PHP SAPI</b>
+        <span>{{ collector.sapiName }}</span>
+      </div>
+    </div>
+
+    <div class="sf-toolbar-info-group">
+      <div class="sf-toolbar-info-piece">
+        <b>Drupal version</b>
+        <span>{{ collector.drupalVersion }}</span>
+      </div>
+      <div class="sf-toolbar-info-piece">
+        <b>Drupal profile</b>
+        <span>{{ collector.drupalProfile }}</span>
+      </div>
+      {% if collector.getGitCommit %}
+        <div class="sf-toolbar-info-piece">
+          <b>Git commit</b>
+          <span><abbr title="{{ collector.getGitCommit }}">{{ collector.getAbbrGitCommit }}</abbr></span>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="sf-toolbar-info-group">
+      <div class="sf-toolbar-info-piece">
+        <b>Webprofiler</b>
+        <span>
+          <a href="{{ collector.getWebprofilerConfigUrl }}" title="Configure Webprofiler">
+            Configure
+          </a>
+        </span>
+      </div>
+      <div class="sf-toolbar-info-piece">
+        <b>Resources</b>
+        <span>
+          <a href="https://www.drupal.org/documentation" rel="help">
+            Read Drupal Docs
+          </a>
+        </span>
+      </div>
+      <div class="sf-toolbar-info-piece">
+        <b>Help</b>
+        <span>
+          <a href="https://www.drupal.org/contribute">Get involved!</a>
+        </span>
+      </div>
+    </div>
+  {% endset %}
+
+  {{ include('@webprofiler/Profiler/toolbar_item.html.twig', { link: true, name: 'config', status: block_status, additional_classes: 'sf-toolbar-block-right' }) }}
+{% endblock %}

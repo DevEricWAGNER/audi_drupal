@@ -1,0 +1,13 @@
+<h2>Collector: {{ name }}</h2>
+
+<hr/>
+
+{% if block('panel', template) is defined %}
+  {% with {
+    collector: profile ? profile.getcollector(name) : null,
+    token: token ?? (profile ? profile.token : null),
+    name: name,
+    } %}
+    {{ block('panel', template) }}
+  {% endwith %}
+{% endif %}

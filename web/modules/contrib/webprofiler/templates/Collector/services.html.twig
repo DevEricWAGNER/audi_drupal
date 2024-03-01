@@ -1,0 +1,24 @@
+{% block toolbar %}
+
+  {% set icon %}
+    {{ include('@webprofiler/Icon/003--services.svg') }}
+    <span class="sf-toolbar-value">{{ collector.getServicesCount }}</span>
+  {% endset %}
+
+  {% set text %}
+    <div class="sf-toolbar-info-piece">
+      <b>Initialized</b>
+      <span class="sf-toolbar-status">{{ collector.getInitializedServicesCount }} ({{ collector.getInitializedServicesWithoutWebprofilerCount }})</span>
+    </div>
+    <div class="sf-toolbar-info-piece">
+      <b>Available</b>
+      <span class="sf-toolbar-status">{{ collector.getServicesCount }}</span>
+    </div>
+  {% endset %}
+
+  {{ include('@webprofiler/Profiler/toolbar_item.html.twig', { link: profiler_url }) }}
+{% endblock %}
+
+{% block panel %}
+  {{ collector.panel() }}
+{% endblock %}

@@ -1,0 +1,17 @@
+{% block toolbar %}
+
+  {% set icon %}
+    {{ include('@webprofiler/Icon/config.svg') }}
+    <span class="sf-toolbar-value"></span>
+  {% endset %}
+
+  {% set text %}
+    {% for item in collector.links %}
+      <div class="sf-toolbar-info-piece">
+        <b>{{ item }}</b>
+      </div>
+    {% endfor %}
+  {% endset %}
+
+  {{ include('@webprofiler/Profiler/toolbar_item.html.twig', { link: false }) }}
+{% endblock %}

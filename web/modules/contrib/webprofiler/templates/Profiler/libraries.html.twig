@@ -1,0 +1,45 @@
+{% for name,library in libraries %}
+  <div class="webprofiler__card_large">
+    <div class="webprofiler__card__title">{{ name }}</div>
+    <div class="webprofiler__card_content">
+      <div><b>{{ 'Version'|t }}</b>: {{ library.version|default('n/a') }}</div>
+      <div><b>{{ 'License'|t }}</b>: <a href="{{ library.license.url }}">{{ library.license.name|default('n/a') }}</a></div>
+      <div>
+        <b>{{ 'Dependencies'|t }}</b>:
+        {% if library.dependencies|length %}
+          <ul>
+            {% for dependency in library.dependencies %}
+              <li>{{ dependency }}</li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          {{ 'none'|t }}
+        {% endif %}
+      </div>
+      <div>
+        <b>{{ 'CSS'|t }}</b>:
+        {% if library.css|length %}
+          <ul>
+            {% for css in library.css %}
+              <li>{{ css.data }} (version: {{ css.version }}, type: {{ css.type }})</li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          {{ 'none'|t }}
+        {% endif %}
+      </div>
+      <div>
+        <b>{{ 'JavaScript'|t }}</b>:
+        {% if library.js|length %}
+          <ul>
+            {% for js in library.js %}
+              <li>{{ js.data }} (version: {{ js.version }}, type: {{ js.type }})</li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          {{ 'none'|t }}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endfor %}

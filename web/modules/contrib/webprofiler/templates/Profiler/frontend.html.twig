@@ -1,0 +1,66 @@
+{{ attach_library('webprofiler/cwv') }}
+
+<div>
+  <div>
+    <h3>{{ 'Core Web Vitals'|t }}</h3>
+    <div class="webprofiler__cards">
+      {% for metric in cwv %}
+        {{ _self.query(metric) }}
+      {% endfor %}
+    </div>
+  </div>
+
+  <div>
+    <h3>{{ 'Performance timing'|t }}</h3>
+
+    {% for key, value in performance.navigation %}
+      <div>
+        <strong>{{ key }}</strong>
+        <span>{{ value }}</span>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% macro query(metric) %}
+  {% set title = '' %}
+  {% set value = '' %}
+  {% set description = '' %}
+  {% set unit = '' %}
+  {% set color = 'green' %}
+
+  {% if metric.rating == 'needs-improvement' %}
+    {% set color = 'yellow' %}
+  {% elseif metric.name == 'poor' %}
+    {% set color = 'red' %}
+  {% endif %}
+
+  {% if metric.name == 'LCP' %}
+    {% set title = 'Largest Contentful Paint' %}
+    {% set value = (metric.value/1000)|round(3, 'floor') %}
+    {% set description = 'Largest Contentful Paint marks the time at which the largest text or image is painted.' %}
+    {% set unit = 's' %}
+  {% elseif metric.name == 'FID' %}
+    {% set title = 'First Input Delay' %}
+    {% set value = (metric.value/1000)|round(3, 'floor') %}
+    {% set description = 'First Input Delay measures the time from when a user first interacts with your site to when the browser is able to respond to that interaction' %}
+    {% set unit = 's' %}
+  {% elseif metric.name == 'CLS' %}
+    {% set title = 'Cumulative Layout Shift' %}
+    {% set value = metric.value|round(3, 'floor') %}
+    {% set description = 'Cumulative Layout Shift measures the movement of visible elements within the viewport.' %}
+    {% set unit = '' %}
+  {% endif %}
+
+  <div class="webprofiler__card">
+    <div class="webprofiler__card__title">{{ title }}</div>
+    <div class="webprofiler__card_content">
+      <div class="webprofiler__cwv_metric__value webprofiler__cwv_metric__value--{{ color }}">{{ value }} {{ unit }}</div>
+      <div class="webprofiler__cwv_metric__description">{{ description }}</div>
+      <div class="webprofiler__cwv_metric__attribution">
+        <p>Attribution:</p>
+        {{ wp_dump(metric.attribution)|raw }}
+      </div>
+    </div>
+  </div>
+{% endmacro %}

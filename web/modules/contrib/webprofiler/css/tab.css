@@ -1,0 +1,21 @@
+.webprofiler__tabs {
+  display: flex;
+  margin-bottom: 40px;
+}
+
+.webprofiler__tabs__label {
+  padding: 0 20px;
+  cursor: pointer;
+  text-decoration: none;
+  color: #55565b;
+  font-size: 16px;
+}
+
+.webprofiler__tabs__content {
+  display: none;
+}
+
+.webprofiler__tabs .active {
+  color: #003ecc;
+  border-bottom: 2px solid #003ecc;
+}

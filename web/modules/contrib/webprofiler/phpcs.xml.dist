@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset>
+  <exclude-pattern>*/node_modules/*</exclude-pattern>
+  <exclude-pattern>*.html.php</exclude-pattern>
+  <exclude-pattern>*.svg.php</exclude-pattern>
+  <exclude-pattern>HtmlErrorRenderer.php</exclude-pattern>
+  <rule ref="PreviousNextDrupal" />
+</ruleset>

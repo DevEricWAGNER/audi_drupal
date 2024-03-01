@@ -1,0 +1,7 @@
+parameters:
+    level: 5
+    treatPhpDocTypesAsCertain: false
+    excludePaths:
+      - tests/*
+    scanDirectories:
+      - %currentWorkingDirectory%/web/core

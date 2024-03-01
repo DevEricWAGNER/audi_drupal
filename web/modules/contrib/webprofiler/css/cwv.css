@@ -1,0 +1,20 @@
+.webprofiler__cwv_metric__value {
+  font-size: 20px;
+}
+
+.webprofiler__cwv_metric__value--green {
+  color: #4caf50;
+}
+
+.webprofiler__cwv_metric__value--yellow {
+  color: #ffc107;
+}
+
+.webprofiler__cwv_metric__value--red {
+  color: #f44336;
+}
+
+.webprofiler__cwv_metric__attribution p {
+  margin-top: 10px;
+  font-weight: bold;
+}

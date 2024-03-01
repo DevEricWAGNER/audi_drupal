@@ -1,0 +1,29 @@
+parameters:
+    ignoreErrors:
+      -
+        message: "#implements deprecated interface Symfony\\\\Component\\\\DependencyInjection\\\\ContainerAwareInterface#"
+        reportUnmatched: false
+      -
+        message: "#Usage of deprecated trait Symfony\\\\Component\\\\DependencyInjection\\\\ContainerAwareTrait#"
+        reportUnmatched: false
+    level: 5
+    paths:
+      - src
+    treatPhpDocTypesAsCertain: false
+    fileExtensions:
+      - php
+      - module
+      - theme
+      - profile
+      - install
+      - inc
+    excludePaths:
+      - templates/Error/*
+      - src/Render/TraceableBigPipe.php
+    scanFiles:
+      - %currentWorkingDirectory%/web/core/includes/theme.inc
+    scanDirectories:
+      - %currentWorkingDirectory%/web/modules/contrib/devel
+      - %currentWorkingDirectory%/web/modules/contrib/tracer
+      - %currentWorkingDirectory%/web/modules/contrib/monolog
+      - %currentWorkingDirectory%/web/core

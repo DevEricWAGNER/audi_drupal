@@ -1,0 +1,48 @@
+{
+    "name": "drupal/webprofiler",
+    "description": "Extract, collect, store and display profiling information for Drupal.",
+    "type": "drupal-module",
+    "support": {
+        "issues": "https://gitlab.com/drupalspoons/webprofiler/-/issues",
+        "slack": "https://app.slack.com/client/T06GX3JTS/C034XBTCHV0",
+        "source": "https://gitlab.com/drupalspoons/webprofiler"
+    },
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Luca Lusso",
+            "email": "lussoluca@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.1.0",
+        "drupal/core": ">=10.1.2",
+        "league/commonmark": "~2.4",
+        "nette/php-generator": "^4.0",
+        "nikic/php-parser": "^5.0 || ^4.18",
+        "symfony/stopwatch": "^6",
+        "symfony/var-dumper": "^6"
+    },
+    "require-dev": {
+        "drupal/devel": "^5.0",
+        "drupal/monolog": "^3.0",
+        "drupal/tracer": "^1.0",
+        "mglaman/phpstan-drupal": "^1.1",
+        "mockery/mockery": "^1.5",
+        "phpstan/extension-installer": "^1.3",
+        "phpstan/phpstan": "^1.11",
+        "phpstan/phpstan-deprecation-rules": "*",
+        "phpstan/phpstan-phpunit": "1.4.x-dev",
+        "phpstan/phpstan-strict-rules": "^1.5",
+        "phpunit/phpunit": ">=9",
+        "previousnext/coding-standard": "^0.1.2"
+    },
+
+    "extra": {
+        "drush": {
+            "services": {
+                "drush.services.yml": "^10"
+            }
+        }
+    }
+}

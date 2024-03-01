@@ -1,0 +1,45 @@
+<div class="webprofiler">
+  <div class="webprofiler__info">
+    <div><a href="{{ profile.url }}">{{ profile.url }}</a></div>
+    <div>{{ 'Method: @method HTTP Status: @status IP: @ip Profiled on: @time Token: @token'|t({'@method': profile.method, '@status': profile.statuscode, '@ip': profile.ip, '@time': profile.time|format_date('long'), '@token': profile.token}) }}</div>
+  </div>
+
+  <div class="webprofiler__dashboard">
+    <div class="webprofiler__collectors">
+      <h4>{{ 'Collectors'|t }}</h4>
+      <div class="webprofiler_collectors_list">
+        {% for collector in collectors %}
+          <div class="webprofiler__collector webprofiler__collector-{{ collector.name }}"><a
+              href="{{ path('webprofiler.panel', {'token': token, 'name': collector.name}) }}"
+              class="use-ajax" data-collector-name="{{ collector.name }}">{{ collector.name|capitalize }}</a></div>
+        {% endfor %}
+      </div>
+
+      {% if profile.children|length > 0 %}
+        <h4>{{ 'Children'|t }}</h4>
+        <div class="webprofiler_collectors_list">
+          {% for children in profile.children %}
+            <div class="webprofiler__collector"><a
+                href="{{ path('webprofiler.dashboard', {'token': children.token}) }}"
+                >{{ children.token }}</a></div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {% if profile.parent is not null %}
+        <h4>{{ 'Parent'|t }}</h4>
+        <div class="webprofiler_collectors_list">
+          <div class="webprofiler__collector"><a
+            href="{{ path('webprofiler.dashboard', {'token': profile.parent.token}) }}"
+          >{{ profile.parent.token }}</a></div>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="webprofiler__panels">
+      <div class="webprofiler__panel" id="js-webprofiler-panel">
+        <p>{{ 'Choose a panel on the left'|t }}</p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,20 @@
+{% block toolbar %}
+
+  {% set icon %}
+    {{ include('@webprofiler/Icon/logger.svg') }}
+    <span class="sf-toolbar-value">{{ collector.getLogsCount }}</span>
+  {% endset %}
+
+  {% set text %}
+    <div class="sf-toolbar-info-piece">
+      <b>Collected logs</b>
+      <span class="sf-toolbar-status">{{ collector.getLogsCount }}</span>
+    </div>
+  {% endset %}
+
+  {{ include('@webprofiler/Profiler/toolbar_item.html.twig', { link: profiler_url }) }}
+{% endblock %}
+
+{% block panel %}
+  {{ collector.panel() }}
+{% endblock %}

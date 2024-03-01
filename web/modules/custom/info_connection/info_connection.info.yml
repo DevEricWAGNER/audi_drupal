@@ -1,0 +1,8 @@
+name: 'Custom Connection Info Block'
+type: module
+description: 'Displays connection information in a custom block.'
+core_version_requirement: ^10
+package: Custom
+version: '1.0'
+dependencies:
+  - drupal:block
